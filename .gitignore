@@ -1,0 +1,49 @@
+# Directorios generados por .NET
+bin/
+obj/
+
+# Configuración local de Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+# Archivos de configuración específicos del entorno
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Archivos de registro
+*.log
+
+# Archivos temporales de IDE
+.idea/
+*.swp
+
+# Archivos de caché del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos y directorios generados por otros sistemas de construcción
+dist/
+build/
+tmp/
+
+# Archivos de configuración de Docker
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Archivos generados por Docker
+Dockerfile.dev
+
+# Archivos de base de datos locales o generados
+*.db
+*.sqlite
+*.db-journal
+
+# Archivos temporales y de caché
+*.tmp
+*.bak
+*.swp
