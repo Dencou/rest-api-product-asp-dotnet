@@ -12,23 +12,23 @@ namespace MiApiRestTest.Controllers
         private readonly IProductService _productService = productService;
 
         [HttpGet("all")]
-        public ActionResult GetTestProducts(){
-            return Ok(_productService.GetProducts());
+        public async Task<ActionResult> GetTestProducts(){
+            return Ok( await _productService.GetProducts());
         }
         [HttpGet("{id}")]
-        public ActionResult GetProductById(string id){
-            var result = _productService.GetProductById(id);
+        public async Task<ActionResult> GetProductById(int id){
+            var result = await _productService.GetProductById(id);
             return Ok(result);
         
         }
         [HttpDelete("{id}")]
-        public ActionResult<ProductModel> DeleteProduct(string id){
-            var product = _productService.DeleteProduct(id);
+        public async Task<ActionResult<ProductModel>> DeleteProduct(int id){
+            var product = await _productService.DeleteProduct(id);
             return Ok(product);
         }
         [HttpPut("{id}")]
-        public ActionResult UpdateProduct(string id, ProductModel updatedProduct){
-            var result = _productService.UpdateProduct(id, updatedProduct);
+        public async Task<ActionResult> UpdateProduct(string id, ProductModel updatedProduct){
+            var result = await _productService.UpdateProduct(updatedProduct);
             if(!result.Success){
                 return NotFound(new {Message = "Id no se encontro"});
             }
@@ -36,20 +36,20 @@ namespace MiApiRestTest.Controllers
         }
 
         [HttpPost]
-        public ActionResult<ProductModel> CreateProduct([FromBody] ProductModel product){
-            try
-                {
-                    var createdProduct = _productService.CreateProduct(product);
-                    return Ok(createdProduct);
-                }
-                catch (ArgumentException ex)
-                {
-                    return BadRequest(new { Message = ex.Message });
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { Message = "Error interno del servidor", Details = ex.Message });
-                }        
-        }
+        public async Task<ActionResult<ProductModel>> CreateProduct([FromBody] ProductModel product){
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _productService.CreateProduct(product);
+
+            if (result.Success)
+            {
+                return CreatedAtAction(nameof(GetProductById), new { id = result.Data.Id }, result.Data);
+            }
+
+            return BadRequest(result.Error);
+            }
     }
 }

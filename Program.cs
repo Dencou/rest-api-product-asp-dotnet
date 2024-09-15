@@ -1,4 +1,5 @@
 using MiApiRestTest.db;
+using MiApiRestTest.Repository;
 using MiApiRestTest.Services;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +11,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(); 
 
-builder.Services.AddSingleton<IProductService, ProductService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>(); 
+builder.Services.AddScoped<IProductService, ProductService>();
+
 
 var app = builder.Build();
 

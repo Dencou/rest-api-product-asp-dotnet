@@ -20,6 +20,9 @@ namespace MiApiRestTest.db
         {
             modelBuilder.Entity<ProductModel>()
                 .HasKey(p => p.Id);
+            modelBuilder.Entity<ProductModel>()
+                .Property(p => p.Id)
+                .ValueGeneratedOnAdd();
         }
     }
 }

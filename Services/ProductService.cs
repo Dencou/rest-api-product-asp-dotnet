@@ -1,49 +1,48 @@
 using Microsoft.AspNetCore.Mvc;
 using MiApiRestTest.Model;
 using MiApiRestTest.Utiles;
+using MiApiRestTest.Repository;
 namespace MiApiRestTest.Services;
     public interface IProductService
     {
-    Result<List<ProductModel>> GetProducts();
-    Result<ProductModel> CreateProduct(ProductModel product);
-    Result<ProductModel?> GetProductById(string id);
-    Result<ProductModel?> DeleteProduct(string id);
-    Result<ProductModel?> UpdateProduct(string id, ProductModel product);
+    Task<Result<List<ProductModel>>> GetProducts();
+    Task<Result<ProductModel>> CreateProduct(ProductModel product);
+    Task<Result<ProductModel?>> GetProductById(int id);
+    Task<Result<ProductModel?>> DeleteProduct(int id);
+    Task<Result<ProductModel?>> UpdateProduct(ProductModel product);
     }
 
 public class ProductService : IProductService
 {
+    private readonly IProductRepository _productRepository;
+     public ProductService(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
 
-    public List<ProductModel> products = new List<ProductModel>();
-
-    public Result<List<ProductModel>> GetProducts()
+    public async Task<Result<List<ProductModel>>> GetProducts()
     {
-        return Result<List<ProductModel>>.Ok(products);
+        var products = await _productRepository.GetAllProductsAsync();
+        return Result<List<ProductModel>>.Ok(products.ToList());
     }
-    public Result<ProductModel?> GetProductById(string id){
-    var result = products.FirstOrDefault(item => item.Id == id);
+    public async Task<Result<ProductModel?>> GetProductById(int id){
+        var result = await _productRepository.GetProductByIdAsync(id);
 
-    if (result == null)
-    {
-        return Result<ProductModel?>.Fail("Producto no encontrado");
+        if (result == null)
+        {
+            return Result<ProductModel?>.Fail("Producto no encontrado");
+        }
+
+        return Result<ProductModel?>.Ok(result);
     }
 
-    return Result<ProductModel?>.Ok(result);
-    }
-
-   public Result<ProductModel> CreateProduct(ProductModel product){
+   public async Task<Result<ProductModel>> CreateProduct(ProductModel product){
        try{
          if (string.IsNullOrEmpty(product.Name) || product.Price <= 0)
         {
             return Result<ProductModel>.Fail("El nombre del producto no puede estar vacio y el precio debe ser positivos");
             }
-        if (products.Count == 0 || product.Id == "1"){
-            product.Id = "1"; 
-        }else{
-            var lastId = int.Parse(products.Last().Id!);
-            product.Id = (lastId + 1).ToString();
-        }
-            products.Add(product); 
+            await _productRepository.AddProductAsync(product);
             return Result<ProductModel>.Ok(product);
        }catch{
             return Result<ProductModel>.Fail("Error desconocido, por favor intente de nuevo");
@@ -51,24 +50,23 @@ public class ProductService : IProductService
        }
         }
 
-    public Result<ProductModel?> DeleteProduct(string id)
+    public async Task<Result<ProductModel?>> DeleteProduct(int id)
     {
-        var product = products.FirstOrDefault(item => item.Id == id);
-        if(product == null){
+        var result = await _productRepository.DeleteProductAsync(id);
+
+        if(result == null){
             return Result<ProductModel?>.Fail("Producto no encontrado");
         }
-        products.Remove(product!);
-        return Result<ProductModel?>.Ok(product);
+        return Result<ProductModel?>.Ok(result);
     }
 
 
-    public Result<ProductModel?> UpdateProduct(string id, ProductModel product){
-        var currentProduct = products.FirstOrDefault(p => p.Id == id);
-        if (currentProduct != null){
-            currentProduct.Name = product.Name;
-            currentProduct.Price = product.Price;
+    public async Task<Result<ProductModel?>> UpdateProduct(ProductModel product){
+        
+        var result = await _productRepository.UpdateProductAsync(product);
 
-            return Result<ProductModel?>.Ok(currentProduct);
+        if (result != null){
+            return Result<ProductModel?>.Ok(result);
         }
         return Result<ProductModel?>.Fail("Error desconocido, por favor intente de nuevo");
     }
