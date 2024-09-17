@@ -90,10 +90,6 @@ public class ProductService : IProductService
     // TODO: Mejorar el flujo de Update Products
     public async Task<Result<ProductModel?>> UpdateProduct(ProductModel product, int id){
 
-        if (!await ProductExists(id))
-        {
-            return Result<ProductModel?>.Fail(ErrorMessages.ProductNotFound);
-        }
         
         var validationResult = _productValidator.ValidateProductIsNotEmpty(product);
         if (!validationResult.Success)
