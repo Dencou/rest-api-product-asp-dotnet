@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddSwaggerGen(); 
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>(); 
+builder.Services.AddScoped<IProductValidator, ProductErrorValidatorService>(); 
 builder.Services.AddScoped<IProductService, ProductService>();
 
 

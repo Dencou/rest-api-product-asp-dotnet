@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MiApiRestTest.Controllers
 {
     [ApiController]
-    [Route("api/products")]
+    [Route("v1/api/products")]
     public class ProductController(IProductService productService) : ControllerBase {
 
         private readonly IProductService _productService = productService;
@@ -27,16 +27,13 @@ namespace MiApiRestTest.Controllers
             return Ok(product);
         }
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateProduct(string id, ProductModel updatedProduct){
-            var result = await _productService.UpdateProduct(updatedProduct);
-            if(!result.Success){
-                return NotFound(new {Message = "Id no se encontro"});
-            }
+        public async Task<ActionResult> UpdateProduct(int id, ProductModel updatedProduct){
+            var result = await _productService.UpdateProduct(updatedProduct, id);
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ProductModel>> CreateProduct([FromBody] ProductModel product){
+        public async Task<ActionResult> CreateProduct([FromBody] ProductModel product){
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
@@ -44,12 +41,8 @@ namespace MiApiRestTest.Controllers
 
             var result = await _productService.CreateProduct(product);
 
-            if (result.Success)
-            {
-                return CreatedAtAction(nameof(GetProductById), new { id = result.Data.Id }, result.Data);
-            }
+            return Ok(result);
 
-            return BadRequest(result.Error);
             }
     }
 }

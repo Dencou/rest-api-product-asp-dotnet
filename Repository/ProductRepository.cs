@@ -16,21 +16,27 @@ namespace MiApiRestTest.Repository
             _context = context;
         }
 
-        public async Task AddProductAsync(ProductModel product)
+        public async Task<ProductModel?> GetProductByNameAsync(string name){
+            return await _context.Products.FirstOrDefaultAsync(p => p.Name == name);
+        }
+
+        public async Task<ProductModel> AddProductAsync(ProductModel product)
         {
-            await _context.Products.AddAsync(product);
+            var result = await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
+
+            return result.Entity;
 
         }
 
         public async Task<ProductModel?> DeleteProductAsync(int id)
         {
             var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
-            }
+            if (product == null) return null;
+
+            _context.Products.Remove(product);
+
+            await _context.SaveChangesAsync();
             return product;
         }
 
@@ -43,9 +49,13 @@ namespace MiApiRestTest.Repository
         {
             return await _context.Products.FindAsync(id);
         }
-
-        public async Task<ProductModel?> UpdateProductAsync(ProductModel product)
+        // TODO: Mejorar el flujo de Update Products
+        public async Task<ProductModel?> UpdateProductAsync(ProductModel product, int id)
         {
+            var existingProduct = await _context.Products.FindAsync(id);
+            
+            if (existingProduct == null) return null;
+
             _context.Update(product);
             await _context.SaveChangesAsync();
             return product;

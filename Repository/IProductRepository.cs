@@ -10,8 +10,10 @@ namespace MiApiRestTest.Repository
     {
         Task<IEnumerable<ProductModel>> GetAllProductsAsync();
         Task<ProductModel?> GetProductByIdAsync(int id);
-        Task AddProductAsync(ProductModel product);
-        Task<ProductModel?> UpdateProductAsync(ProductModel product);
+        Task<ProductModel> AddProductAsync(ProductModel product);
+        // TODO: Mejorar el flujo de Update Products
+        Task<ProductModel?> UpdateProductAsync(ProductModel product, int id);
         Task<ProductModel?> DeleteProductAsync(int id);
+        Task<ProductModel?> GetProductByNameAsync(string name);
     }
 }
