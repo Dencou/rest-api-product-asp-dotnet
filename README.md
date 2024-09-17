@@ -56,9 +56,9 @@ cd MiApiRestTest
 dotnet ef migrations add InitialCreate
 ```
 4. **Dockeriza la applicación**
-###### Primero, asegúrate de tener Docker instalado y corriendo.
--> https://www.docker.com/products/docker-desktop/
-###### Usa el siguiente comando para levantar los contenedores:
+##### Primero, asegúrate de tener Docker instalado y corriendo.
+- https://www.docker.com/products/docker-desktop/
+##### Usa el siguiente comando para levantar los contenedores:
 ```
 docker-compose up --build
 ```
@@ -82,9 +82,9 @@ dotnet run
 ##### Rutas disponibles
 - GET /v1/api/products
 - GET /v1/api/products/{id}
-- POST /v1/api/products - Crear un nuevo producto.
-- PUT /v1/api/products/{id} - Actualizar un producto existente.
-- DELETE /v1/api/products/{id} - Eliminar un producto por ID.
+- POST /v1/api/products
+- PUT /v1/api/products/{id}
+- DELETE /v1/api/products/{id}
 
 
 
